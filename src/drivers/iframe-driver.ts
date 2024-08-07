@@ -29,6 +29,10 @@ export default class IframeDriver extends SqliteLikeBaseDriver {
    */
   listen() {
     const handler = (e: MessageEvent<ParentResponseData>) => {
+      if (!["query", "transaction"].includes(e.data.type)) {
+        return;
+      }
+
       if (e.data.error) {
         this.queryPromise[e.data.id].reject(e.data.error);
         delete this.queryPromise[e.data.id];

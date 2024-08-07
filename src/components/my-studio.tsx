@@ -1,6 +1,6 @@
 import { useTheme } from "@/context/theme-provider";
 import { useRouter } from "next/navigation";
-import { ReactElement, useCallback, useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 import { toast } from "sonner";
 import { triggerSelectFiles, uploadFile } from "./file-upload";
 import {
@@ -20,6 +20,7 @@ interface MyStudioProps {
   collabarator?: CollaborationBaseDriver;
   docDriver?: SavedDocDriver;
   sideBarFooterComponent?: ReactElement;
+  hideGoBackButton?: boolean;
 }
 
 function MyStudioInternal({
@@ -29,14 +30,17 @@ function MyStudioInternal({
   docDriver,
   collabarator,
   sideBarFooterComponent,
+  hideGoBackButton,
 }: MyStudioProps) {
   const router = useRouter();
   const { openBlockEditor } = useBlockEditor();
   const { theme, toggleTheme } = useTheme();
 
-  const goBack = useCallback(() => {
-    router.push("/connect");
-  }, [router]);
+  const goBack = hideGoBackButton
+    ? undefined
+    : () => {
+        router.push("/connect");
+      };
 
   const extensions = useMemo<StudioExtension[]>(() => {
     return [
